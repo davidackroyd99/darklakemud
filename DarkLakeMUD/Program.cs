@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -7,30 +8,29 @@ namespace DarkLakeMUD
 {
     class Program
     {
+        private static Int32 _port = 9090;
+        private static IPAddress _localAddr = IPAddress.Parse("127.0.0.1");
+
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs/darklogs.txt", rollingInterval: RollingInterval.Infinite)
+                .CreateLogger();
+
+            Log.Debug("Logging started");
+
             TcpListener server = null;
             try
             {
-                Int32 port = 9090;
-                IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+                server = new TcpListener(_localAddr, _port);
 
-                server = new TcpListener(localAddr, port);
-
-                // Start listening for client requests.
+                Log.Information("Start listening for client requests on {IP}:{Port}", _localAddr, _port);
                 server.Start();
 
-                // Buffer for reading data
-                Byte[] bytes = new Byte[256];
-                String data = null;
-
-                // Enter the listening loop. 
                 while (true)
                 {
-                    Console.Write("Waiting for a connection... ");
-
-                    // Perform a blocking call to accept requests. 
-                    // You could also user server.AcceptSocket() here.
                     var client = server.AcceptTcpClient();
 
                     var manager = new ClientManager(client);
@@ -45,8 +45,8 @@ namespace DarkLakeMUD
             }
             finally
             {
-                // Stop listening for new clients.
                 server.Stop();
+                Log.Information("Stopped listening for for new clients.");
             }
 
 
