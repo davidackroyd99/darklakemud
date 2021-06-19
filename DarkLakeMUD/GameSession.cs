@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using DarkLakeMUD.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace DarkLakeMUD
 {
-    public class ClientManager
+    // Holds everything we need to run a session of the game
+    class GameSession
     {
         private TcpClient _client;
         private NetworkStream _networkStream;
         private Int32 _sessionId;
+        private Character _character;
 
-        public ClientManager(TcpClient client)
+        public GameSession(TcpClient client)
         {
             _client = client;
             _networkStream = client.GetStream();
@@ -27,13 +30,19 @@ namespace DarkLakeMUD
                 ((IPEndPoint)_networkStream.Socket.RemoteEndPoint).Address, _sessionId);
         }
 
-        public void Handle()
+        // For testing, with a preassigned playerName
+        public GameSession(TcpClient client, string playerName) : this(client)
+        {
+            _character = new Character() { Name = playerName };
+        }
+
+        // Continually read commands from the telnet sesion, handle them, and provide a response
+        public void Play()
         {
             var bytes = new Byte[256];
             String command = null;
             int i;
 
-            // Loop to receive all the data sent by the client. 
             while ((i = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
             {
                 command = GetClientCommand(bytes, i);

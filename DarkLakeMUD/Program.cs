@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace DarkLakeMUD
     {
         private static Int32 _port = 9090;
         private static IPAddress _localAddr = IPAddress.Parse("127.0.0.1");
+        private static List<string> _debugPlayerNames = new List<string>() { "Reizeid", "Behmur", "Mao", "Halveg", "Grargor" };
 
         static void Main(string[] args)
         {
@@ -33,8 +35,10 @@ namespace DarkLakeMUD
                 {
                     var client = server.AcceptTcpClient();
 
-                    var manager = new ClientManager(client);
-                    var action = new Action(manager.Handle);
+                    var manager = new GameSession(client, _debugPlayerNames[0]);
+                    var action = new Action(manager.Play);
+
+                    _debugPlayerNames.RemoveAt(0);
 
                     Task.Run(action);
                 }
