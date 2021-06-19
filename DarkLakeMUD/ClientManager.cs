@@ -30,22 +30,38 @@ namespace DarkLakeMUD
         public void Handle()
         {
             var bytes = new Byte[256];
-            String data = null;
+            String command = null;
             int i;
 
             // Loop to receive all the data sent by the client. 
             while ((i = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
             {
-                data = Encoding.ASCII.GetString(bytes, 0, i);
-                Console.WriteLine("Received: {0}", data);
+                command = GetClientCommand(bytes, i);
 
-                data = data.ToUpper();
-
-                byte[] msg = Encoding.ASCII.GetBytes(data);
-
-                _networkStream.Write(msg, 0, msg.Length);
-                Console.WriteLine("Sent: {0}", data);
+                SendMessageToClient(command.ToUpper());
             }
+        }
+
+        private string GetClientCommand(byte[] bytes, int byteCount)
+        {
+            var cmd = Encoding.ASCII.GetString(bytes, 0, byteCount).Trim();
+
+            LogWithSessionId(new string[] { "Received command", cmd});
+
+            return cmd;
+        }
+
+        private void SendMessageToClient(string message)
+        {
+            var msg = Encoding.ASCII.GetBytes(message);
+            _networkStream.Write(msg, 0, msg.Length);
+
+            LogWithSessionId(new string[] { "Sent reply", message });
+        }
+
+        private void LogWithSessionId(string[] msgs)
+        {
+            Log.Information("[Session {sessionId}] {msg}", _sessionId, string.Join(" ", msgs));
         }
     }
 }
