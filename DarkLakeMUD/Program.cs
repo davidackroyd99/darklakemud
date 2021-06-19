@@ -48,10 +48,6 @@ namespace DarkLakeMUD
                 server.Stop();
                 Log.Information("Stopped listening for for new clients.");
             }
-
-
-            Console.WriteLine("\nHit enter to continue...");
-            Console.Read();
         }
     }
 }
