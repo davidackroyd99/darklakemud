@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using DarkLakeMUD.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -31,12 +32,21 @@ namespace DarkLakeMUD
                 Log.Information("Start listening for client requests on {IP}:{Port}", _localAddr, _port);
                 server.Start();
 
+                var mediator = new GameSessionMediator();
+
                 while (true)
                 {
                     var client = server.AcceptTcpClient();
 
-                    var manager = new GameSession(client, _debugPlayerNames[0]);
-                    var action = new Action(manager.Play);
+                    var session = new GameSession(client, _debugPlayerNames[0]);
+                    var action = new Action(session.Play);
+                    mediator.AddSession(session);
+
+                    var testRoom = new Room();
+                    testRoom.Description.Title = "The Top Of The Jetty";
+                    testRoom.Description.Body = "You are standing at the top of the jetty.";
+
+                    new RoomManager().AddCharacterToRoom(testRoom, session.Character, mediator);
 
                     _debugPlayerNames.RemoveAt(0);
 

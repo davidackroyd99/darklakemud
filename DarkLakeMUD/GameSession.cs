@@ -13,10 +13,11 @@ namespace DarkLakeMUD
     // Holds everything we need to run a session of the game
     class GameSession
     {
+        public Character Character;
+
         private TcpClient _client;
         private NetworkStream _networkStream;
         private Int32 _sessionId;
-        private Character _character;
 
         public GameSession(TcpClient client)
         {
@@ -33,7 +34,7 @@ namespace DarkLakeMUD
         // For testing, with a preassigned playerName
         public GameSession(TcpClient client, string playerName) : this(client)
         {
-            _character = new Character() { Name = playerName };
+            Character = new Character() { Name = playerName };
         }
 
         // Continually read commands from the telnet sesion, handle them, and provide a response
@@ -44,11 +45,7 @@ namespace DarkLakeMUD
             int i;
 
             while ((i = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
-            {
                 command = GetClientCommand(bytes, i);
-
-                SendMessageToClient(command.ToUpper());
-            }
         }
 
         private string GetClientCommand(byte[] bytes, int byteCount)

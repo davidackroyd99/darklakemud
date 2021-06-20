@@ -15,9 +15,7 @@ namespace DarkLakeMUD.Models
 
         public Character()
         {
-            Room = new Room();
-            Room.Description.Title = "The Top Of The Jetty";
-            Room.Description.Body = "You are standing at the top of the jetty. ";
+
         }
     }
 }
