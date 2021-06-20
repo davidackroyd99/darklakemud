@@ -60,7 +60,7 @@ namespace DarkLakeMUD
             return cmd;
         }
 
-        private void SendMessageToClient(string message)
+        public void SendMessageToClient(string message)
         {
             var msg = Encoding.ASCII.GetBytes(message);
             _networkStream.Write(msg, 0, msg.Length);

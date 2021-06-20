@@ -11,5 +11,13 @@ namespace DarkLakeMUD.Models
     {
         public string Name;
         public int Level = 1;
+        public Room Room;
+
+        public Character()
+        {
+            Room = new Room();
+            Room.Description.Title = "The Top Of The Jetty";
+            Room.Description.Body = "You are standing at the top of the jetty. ";
+        }
     }
 }
