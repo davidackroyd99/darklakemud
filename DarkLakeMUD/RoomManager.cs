@@ -29,9 +29,13 @@ namespace DarkLakeMUD
 
         public void AddCharacterToRoom(Room room, Character character, GameSessionMediator mediator)
         {
-            character.Room = room;
-
             var evt = new CharacterEntersRoom(room, character);
+
+            lock (room)
+            {
+                room.AddCharacter(character);
+            }
+
             mediator.ReceiveEvent(evt);
         }
     }

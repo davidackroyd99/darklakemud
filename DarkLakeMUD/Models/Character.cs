@@ -11,7 +11,6 @@ namespace DarkLakeMUD.Models
     {
         public string Name;
         public int Level = 1;
-        public Room Room;
 
         public Character()
         {
