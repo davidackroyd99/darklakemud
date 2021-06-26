@@ -33,20 +33,28 @@ namespace DarkLakeMUD
                 server.Start();
 
                 var mediator = new GameSessionMediator();
+                var manager = new RoomManager();
 
                 while (true)
                 {
                     var client = server.AcceptTcpClient();
 
-                    var session = new GameSession(client, _debugPlayerNames[0]);
+                    var session = new GameSession(client, manager, mediator, _debugPlayerNames[0]);
                     var action = new Action(session.Play);
                     mediator.AddSession(session);
 
                     var testRoom = new Room();
                     testRoom.Description.Title = "The Top Of The Jetty";
-                    testRoom.Description.Body = "You are standing at the top of the jetty.";
+                    testRoom.Description.Body = "You are at the top of an old wooden jetty. You can move west onto the jetty.";
 
-                    new RoomManager().AddCharacterToRoom(testRoom, session.Character, mediator);
+                    var testRoom2 = new Room();
+                    testRoom2.Description.Title = "On the Jetty";
+                    testRoom2.Description.Body = "You are on a rotten jetty, extending out into the dark lake. Mist surrounds you, and you can barely see the surface of the mysterious water.";
+
+                    testRoom.AddExit(testRoom2, Direction.WEST);
+
+                    manager.AddRoom(testRoom);
+                    manager.AddRoom(testRoom2);
 
                     _debugPlayerNames.RemoveAt(0);
 

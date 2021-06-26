@@ -18,11 +18,15 @@ namespace DarkLakeMUD
         private TcpClient _client;
         private NetworkStream _networkStream;
         private Int32 _sessionId;
+        private RoomManager _roomManager;
+        private GameSessionMediator _mediator;
 
-        public GameSession(TcpClient client)
+        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator)
         {
             _client = client;
             _networkStream = client.GetStream();
+            _roomManager = roomManager;
+            _mediator = mediator;
 
             var rand = new Random();
             _sessionId = rand.Next(0, Int32.MaxValue);
@@ -32,7 +36,7 @@ namespace DarkLakeMUD
         }
 
         // For testing, with a preassigned playerName
-        public GameSession(TcpClient client, string playerName) : this(client)
+        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator, string playerName) : this(client, roomManager, mediator)
         {
             Character = new Character() { Name = playerName };
         }
@@ -44,8 +48,15 @@ namespace DarkLakeMUD
             String command = null;
             int i;
 
+            _roomManager.AddCharacterToRoom(_roomManager.GetRooms()[0], Character, _mediator);
+
             while ((i = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
+            {
                 command = GetClientCommand(bytes, i);
+
+                if (command == "go west")
+                    _roomManager.MoveCharacter(Character, Direction.WEST, _mediator);
+            }
         }
 
         private string GetClientCommand(byte[] bytes, int byteCount)

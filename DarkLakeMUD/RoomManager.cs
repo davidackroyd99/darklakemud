@@ -38,5 +38,22 @@ namespace DarkLakeMUD
 
             mediator.ReceiveEvent(evt);
         }
+
+        public void MoveCharacter(Character character, Direction direction, GameSessionMediator mediator)
+        {
+            var room = _rooms.Where(r => r.Characters.Contains(character)).FirstOrDefault();
+            var destination = room.GetExit(direction);
+
+            if (destination != null)
+            {
+                lock (room) lock (destination)
+                {
+                    room.Characters.Remove(character);
+                    room.AddCharacter(character);
+                }
+            }
+
+            mediator.ReceiveEvent(new CharacterEntersRoom(destination, character));
+        }
     }
 }
