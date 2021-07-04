@@ -27,9 +27,14 @@ namespace DarkLakeMUD
             var characterSession = _sessions.Where(s => s.Character == evt.Character).FirstOrDefault();
             var sessionsToUpdate = _sessions.Where(s => evt.Room.Characters.Contains(evt.Character) && s.Character != evt.Character);
 
+            var message = $"{evt.Room.Description.Title}\n{evt.Room.Description.Body}";
+
+            foreach (var character in evt.Room.Characters)
+                message += $"\n{character.Name} is here.";
+
             // Could be an NPC, hence this could be null
             if (characterSession != null)
-                characterSession.SendMessageToClient($"{evt.Room.Description.Title}\n{evt.Room.Description.Body}\n\n");
+                characterSession.SendMessageToClient($"{message}\n\n");
 
             foreach (var session in sessionsToUpdate)
                 session.SendMessageToClient($"{evt.Character.Name} has entered the room.");

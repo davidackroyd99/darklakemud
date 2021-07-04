@@ -55,5 +55,13 @@ namespace DarkLakeMUD
 
             mediator.ReceiveEvent(new CharacterEntersRoom(destination, character));
         }
+
+        public void EvictCharacter(Character character)
+        {
+            var characterRooms = _rooms.Where(r => r.Characters.Contains(character));
+
+            foreach (var r in characterRooms)
+                r.Characters.Remove(character);
+        }
     }
 }

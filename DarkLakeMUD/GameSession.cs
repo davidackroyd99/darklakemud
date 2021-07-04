@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DarkLakeMUD
@@ -33,6 +35,8 @@ namespace DarkLakeMUD
 
             Log.Information("New ClientManager instantiated. Client has IP {ip} and has been given sessionId {sessionId}",
                 ((IPEndPoint)_networkStream.Socket.RemoteEndPoint).Address, _sessionId);
+
+            Task.Run(new Action(PollForDisconnect));
         }
 
         // For testing, with a preassigned playerName
@@ -59,11 +63,17 @@ namespace DarkLakeMUD
             }
         }
 
+        public void PollForDisconnect()
+        {
+            if (_networkStream.Socket.Poll(-1, SelectMode.SelectRead))
+                _roomManager.EvictCharacter(Character);
+        }
+
         private string GetClientCommand(byte[] bytes, int byteCount)
         {
             var cmd = Encoding.ASCII.GetString(bytes, 0, byteCount).Trim();
 
-            LogWithSessionId(new string[] { "Received command", cmd});
+            LogWithSessionId(new string[] { "Received command", cmd });
 
             return cmd;
         }
