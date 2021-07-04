@@ -11,7 +11,7 @@ namespace DarkLakeMUD.Models
         Description Description { get; set; }
     }
 
-    class Description
+    public class Description
     {
         public string Title;
         public string Body;

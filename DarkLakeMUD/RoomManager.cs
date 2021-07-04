@@ -17,6 +17,12 @@ namespace DarkLakeMUD
             _rooms = new List<Room>();
         }
 
+        public void AddRooms(List<Room> rooms)
+        {
+            foreach (var room in rooms)
+                AddRoom(room);
+        }
+
         public void AddRoom(Room room)
         {
             _rooms.Add(room);
