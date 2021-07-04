@@ -1,4 +1,5 @@
 ﻿using DarkLakeMUD.Events;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace DarkLakeMUD
 {
     class GameSessionMediator
     {
-        // TODO - Clean up old sessions, no need to send updates to them
         private List<GameSession> _sessions;
 
         public GameSessionMediator()
@@ -39,5 +39,7 @@ namespace DarkLakeMUD
             foreach (var session in sessionsToUpdate)
                 session.SendMessageToClient($"{evt.Character.Name} has entered the room.");
         }
+
+        public void SessionClosed(GameSession session) => _sessions.Remove(session);
     }
 }

@@ -66,7 +66,12 @@ namespace DarkLakeMUD
         public void PollForDisconnect()
         {
             if (_networkStream.Socket.Poll(-1, SelectMode.SelectRead))
+            {
+                LogWithSessionId("session disconnected");
+                
                 _roomManager.EvictCharacter(Character);
+                _mediator.SessionClosed(this);
+            }
         }
 
         private string GetClientCommand(byte[] bytes, int byteCount)
@@ -86,9 +91,8 @@ namespace DarkLakeMUD
             LogWithSessionId(new string[] { "Sent reply", message });
         }
 
-        private void LogWithSessionId(string[] msgs)
-        {
-            Log.Information("[Session {sessionId}] {msg}", _sessionId, string.Join(" ", msgs));
-        }
+        private void LogWithSessionId(string msg) => LogWithSessionId(new string[] { msg });
+
+        private void LogWithSessionId(string[] msgs) => Log.Information("[Session {sessionId}] {msg}", _sessionId, string.Join(" ", msgs));
     }
 }
