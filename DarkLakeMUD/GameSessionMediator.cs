@@ -29,7 +29,7 @@ namespace DarkLakeMUD
 
             var message = $"{evt.Room.Description.Title}\n{evt.Room.Description.Body}";
 
-            foreach (var character in evt.Room.Characters)
+            foreach (var character in evt.Room.Characters.Where(c => c != evt.Character))
                 message += $"\n{character.Name} is here.";
 
             // Could be an NPC, hence this could be null
