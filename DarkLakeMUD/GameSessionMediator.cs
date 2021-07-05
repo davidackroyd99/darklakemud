@@ -25,7 +25,7 @@ namespace DarkLakeMUD
         public void ReceiveEvent(CharacterEntersRoom evt)
         {
             var characterSession = _sessions.Where(s => s.Character == evt.Character).FirstOrDefault();
-            var sessionsToUpdate = _sessions.Where(s => evt.Room.Characters.Contains(evt.Character) && s.Character != evt.Character);
+            var sessionsToUpdate = _sessions.Where(s => evt.Room.Characters.Contains(s.Character) && s.Character != evt.Character);
 
             var message = $"{evt.Room.Description.Title}\n{evt.Room.Description.Body}";
 

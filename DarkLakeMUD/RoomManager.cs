@@ -1,5 +1,6 @@
 ﻿using DarkLakeMUD.Events;
 using DarkLakeMUD.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace DarkLakeMUD
         {
             var evt = new CharacterEntersRoom(room, character);
 
+            Log.Debug($"Adding character {character.Name} to room {room.InternalName}.");
+
             lock (room)
             {
                 room.AddCharacter(character);
@@ -50,16 +53,16 @@ namespace DarkLakeMUD
             var room = _rooms.Where(r => r.Characters.Contains(character)).FirstOrDefault();
             var destination = room.GetExit(direction);
 
+            Log.Debug($"Character {character.Name} moving from {room.InternalName} to {destination.InternalName}.");
+
             if (destination != null)
             {
                 lock (room) lock (destination)
                 {
                     room.Characters.Remove(character);
-                    room.AddCharacter(character);
+                    AddCharacterToRoom(destination, character, mediator);
                 }
             }
-
-            mediator.ReceiveEvent(new CharacterEntersRoom(destination, character));
         }
 
         public void EvictCharacter(Character character)
