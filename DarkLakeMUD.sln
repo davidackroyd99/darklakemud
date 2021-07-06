@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkLakeMUD", "DarkLakeMUD\DarkLakeMUD.csproj", "{021FCC2D-BAD2-47E4-B827-1A7B7C962BED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkLakeMUD", "DarkLakeMUD\DarkLakeMUD.csproj", "{021FCC2D-BAD2-47E4-B827-1A7B7C962BED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkLakeMUD.Tests", "DarkLakeMUD.Tests\DarkLakeMUD.Tests.csproj", "{941696E6-A2E4-4B06-BB07-345273505F24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{021FCC2D-BAD2-47E4-B827-1A7B7C962BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{021FCC2D-BAD2-47E4-B827-1A7B7C962BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{021FCC2D-BAD2-47E4-B827-1A7B7C962BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{941696E6-A2E4-4B06-BB07-345273505F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{941696E6-A2E4-4B06-BB07-345273505F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{941696E6-A2E4-4B06-BB07-345273505F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{941696E6-A2E4-4B06-BB07-345273505F24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

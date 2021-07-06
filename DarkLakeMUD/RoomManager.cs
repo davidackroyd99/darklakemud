@@ -69,6 +69,7 @@ namespace DarkLakeMUD
         {
             var characterRooms = _rooms.Where(r => r.Characters.Contains(character));
 
+            // TODO lock
             foreach (var r in characterRooms)
                 r.Characters.Remove(character);
         }
