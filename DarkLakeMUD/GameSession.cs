@@ -1,4 +1,5 @@
 ﻿using DarkLakeMUD.Models;
+using DarkLakeMUD.Parser;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -22,13 +23,15 @@ namespace DarkLakeMUD
         private Int32 _sessionId;
         private RoomManager _roomManager;
         private GameSessionMediator _mediator;
+        private IParser _parser;
 
-        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator)
+        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator, IParser parser)
         {
             _client = client;
             _networkStream = client.GetStream();
             _roomManager = roomManager;
             _mediator = mediator;
+            _parser = parser;
 
             var rand = new Random();
             _sessionId = rand.Next(0, Int32.MaxValue);
@@ -40,7 +43,8 @@ namespace DarkLakeMUD
         }
 
         // For testing, with a preassigned playerName
-        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator, string playerName) : this(client, roomManager, mediator)
+        public GameSession(TcpClient client, RoomManager roomManager, GameSessionMediator mediator, IParser parser, string playerName) 
+            : this(client, roomManager, mediator, parser)
         {
             Character = new Character() { Name = playerName };
         }
@@ -49,17 +53,17 @@ namespace DarkLakeMUD
         public void Play()
         {
             var bytes = new Byte[256];
-            String command = null;
             int i;
 
             _roomManager.AddCharacterToRoom(_roomManager.GetRooms()[0], Character, _mediator);
 
             while ((i = _networkStream.Read(bytes, 0, bytes.Length)) != 0)
             {
-                command = GetClientCommand(bytes, i);
+                var command = GetClientCommand(bytes, i);
+                var direction = (Direction)Enum.Parse(typeof(Direction), command.Noun, true);
 
-                if (command == "go west")
-                    _roomManager.MoveCharacter(Character, Direction.WEST, _mediator);
+                if (command.Verb == Verb.Go)
+                    _roomManager.MoveCharacter(Character, direction, _mediator);
             }
         }
 
@@ -74,13 +78,13 @@ namespace DarkLakeMUD
             }
         }
 
-        private string GetClientCommand(byte[] bytes, int byteCount)
+        private Command GetClientCommand(byte[] bytes, int byteCount)
         {
             var cmd = Encoding.ASCII.GetString(bytes, 0, byteCount).Trim();
 
             LogWithSessionId(new string[] { "Received command", cmd });
-
-            return cmd;
+            
+            return _parser.Parse(cmd);
         }
 
         public void SendMessageToClient(string message)

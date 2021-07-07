@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace DarkLakeMUD.Tests
 {
-    public class Tests
+    public class ParserTests
     {
         private IParser _parser;
 

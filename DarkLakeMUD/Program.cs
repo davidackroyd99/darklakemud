@@ -1,5 +1,6 @@
 ﻿using DarkLakeMUD.DataLoader;
 using DarkLakeMUD.Models;
+using DarkLakeMUD.Parser;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace DarkLakeMUD
 
                 var mediator = new GameSessionMediator();
                 var manager = new RoomManager();
+                var parser = new DefaultParser();
 
                 var rooms = new DataFileParser().ParseFile(@"D:\projects\DarkLakeMUD\data\demo.json");
                 manager.AddRooms(rooms);
@@ -43,7 +45,7 @@ namespace DarkLakeMUD
                 {
                     var client = server.AcceptTcpClient();
 
-                    var session = new GameSession(client, manager, mediator, _debugPlayerNames[0]);
+                    var session = new GameSession(client, manager, mediator, parser, _debugPlayerNames[0]);
                     var action = new Action(session.Play);
                     mediator.AddSession(session);
 
