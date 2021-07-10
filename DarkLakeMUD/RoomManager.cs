@@ -24,15 +24,9 @@ namespace DarkLakeMUD
                 AddRoom(room);
         }
 
-        public void AddRoom(Room room)
-        {
-            _rooms.Add(room);
-        }
+        public void AddRoom(Room room) => _rooms.Add(room);
 
-        public List<Room> GetRooms()
-        {
-            return _rooms;
-        }
+        public List<Room> GetRooms() => _rooms;
 
         public void AddCharacterToRoom(Room room, Character character, GameSessionMediator mediator)
         {
@@ -41,9 +35,19 @@ namespace DarkLakeMUD
             Log.Debug($"Adding character {character.Name} to room {room.InternalName}.");
 
             lock (room)
-            {
                 room.AddCharacter(character);
-            }
+
+            mediator.ReceiveEvent(evt);
+        }
+
+        public void RemoveCharacterToRoom(Room room, Character character, GameSessionMediator mediator)
+        {
+            var evt = new CharacterEntersRoom(room, character);
+
+            Log.Debug($"Adding character {character.Name} to room {room.InternalName}.");
+
+            lock (room)
+                room.AddCharacter(character);
 
             mediator.ReceiveEvent(evt);
         }

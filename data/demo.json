@@ -6,7 +6,8 @@
             "Body": "You are at the top of an old wooden jetty. You can move west onto the jetty."
         },
         "Exits": {
-            "WEST": "on_jetty"
+            "WEST": "on_jetty",
+            "EAST": "tavern"
         }
     },
     {
@@ -14,6 +15,16 @@
         "Description": {
             "Title": "On the Jetty",
             "Body": "You are on a rotten jetty, extending out into the dark lake. Mist surrounds you, and you can barely see the surface of the mysterious water."
+        }
+    },
+    {
+        "InternalName": "tavern",
+        "Description": {
+            "Title": "The Tavern",
+            "Body": "You are in a tavern. It smells strange in here."
+        },
+        "Exits": {
+            "WEST": "top_of_jetty"
         }
     }
 ]
